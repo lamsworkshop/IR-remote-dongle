@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Websocket Client</title>
+<script type="text/javascript" src="ir-encode.js"></script>
+<script type="text/javascript" src="ir-decode.js"></script>
+<script type="text/javascript">
+const socket = new WebSocket('ws://192.168.50.175:9001');
+socket.binaryType = "arraybuffer";
+socket.addEventListener('open', (event) => {
+	document.getElementById('close').disabled = false;
+	document.getElementById('send').disabled = false;
+	document.getElementById('send_line').disabled = false;
+	document.getElementById('ir').disabled = false;
+	document.getElementById('learn').disabled = false;
+});
+socket.addEventListener('message', (event) => {
+	if (event.data instanceof ArrayBuffer) {
+		const byteArray = new Uint8Array(event.data);
+		document.getElementById('message').innerText = byteArray;
+	} else document.getElementById('message').innerText = event.data;
+});
+socket.addEventListener('error', (event) => { alert('error'); });
+socket.addEventListener('close', (event) => {
+	document.getElementById('close').disabled = true;
+	document.getElementById('send').disabled = true;
+	document.getElementById('send_line').disabled = true;
+	document.getElementById('ir').disabled = true;
+	document.getElementById('learn').disabled = true;
+});
+function buttonClose() { socket.close(1000, "Client closing connection"); }
+function buttonSend() { socket.send(document.getElementById('text').value); }
+function buttonSendLine() {
+	socket.send(document.getElementById('text').value + '\r\n');
+}
+function keyDown() { socket.send(encode_rc6(4, 12)); }
+function keyUp() { socket.send(new ArrayBuffer(0)); }
+function learn() { socket.send(''); }
+</script>
+</head>
+<body>
+<input type='text' id='text' size='40'>
+<button id='send' onclick="buttonSend()" disabled>Send</button>
+<button id='send_line' onclick="buttonSendLine()" disabled>Send(CRLF)</button>
+<button id="close" onclick="buttonClose()" disabled>Close Connection</button>
+<button id="ir" onmousedown="keyDown()" onmouseup="keyUp()" disabled>IR</button>
+<button id="learn" onclick="learn()" disabled>LEARN</button>
+<div id='message'></div>
+</body>
+</html>

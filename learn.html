@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>IR Remote Dongle</title>
+<meta charset="UTF-8">
+<style>
+body { font-size: 42px; }
+button { height: 180px; font-size: 42px; }
+.line {
+	font-family: courier;
+	min-height: 70px;
+	align-items: center;
+	overflow-x: auto;
+	white-space: nowrap;
+}
+</style>
+<script type="text/javascript" src="ir-decode.js"></script>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+var ip = urlParams.get('ip');
+if (ip === null) ip = prompt("Please enter ip: ", "192.168."); 
+const socket = new WebSocket(`ws://${ip}:9001`);
+socket.binaryType = "arraybuffer";
+socket.addEventListener('open', (event) => {
+	document.getElementById('learn').disabled = false;
+	document.getElementById('close').disabled = false;
+	document.getElementById('reload').disabled = true;
+});
+socket.addEventListener('close', (event) => {
+	document.getElementById('learn').disabled = true;
+	document.getElementById('close').disabled = true;
+	document.getElementById('reload').disabled = false;
+});
+socket.addEventListener('message', (event) => {
+	if (event.data instanceof ArrayBuffer) {
+		const byteArray = new Uint8Array(event.data);
+		const array = decode_ir(byteArray);
+		let string = `<b>${array[0]}</b>`;
+		for (let i = 1; i < array.length; i++) {
+			if (i & 1) string += `,${array[i]}`;
+			else string += `,<b>${array[i]}</b>`;
+		}
+		print(string);
+		print(decode_array2string(array));
+		print(decode_array(array));
+		document.getElementById('learn').disabled = false;
+	}
+});
+socket.addEventListener('error', (event) => { alert('error'); });
+function learn() {
+	socket.send('');
+	document.getElementById('learn').disabled = true;
+}
+function buttonClose() { socket.close(1000, "Client closing connection"); }
+function buttonReload() {
+	document.getElementById('reload').disabled = true;
+	let string = window.location.href;
+	const i = string.indexOf('html');
+	string = string.substring(0, i);
+	window.location.href = `${string}html?ip=${ip}`;
+}
+var line = 0;
+function print(string) {
+	const screen = document.getElementById("screen");
+	if (line == 16) {
+		const div = document.createElement('div');
+		div.classList.add('line');
+		screen.appendChild(div);
+		screen.firstElementChild.remove();
+		line--;
+	}
+	screen.children[line++].innerHTML = string;
+}
+</script>
+</head>
+<body>
+<button id="learn" onclick="learn()" style="width: 100%;"  disabled>LEARN</button>
+<div id="screen">
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+</div>
+<div style="text-align: center;">
+<button id="close" onclick="buttonClose()" style="width: 49%;" disabled>Close Connection</button>
+<button id="reload" onclick="buttonReload()" style="width: 49%;" disabled>Reconnect</button>
+</div>
+</body>
+</html>

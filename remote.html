@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>IR Remote Dongle</title>
+<meta charset="UTF-8">
+<style>
+body { font-size: 24px; }
+.btn-large {width: 300px; height: 200px; font-size: 42px; user-select: none;}
+</style>
+<script type="text/javascript" src="ir-encode.js"></script>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+var ip = urlParams.get('ip');
+if (ip === null) ip = prompt("Please enter ip: ", "192.168."); 
+const socket = new WebSocket(`ws://${ip}:9001`);
+socket.binaryType = "arraybuffer";
+socket.addEventListener('open', (event) => {
+	document.getElementById('power').disabled = false;
+	document.getElementById('source').disabled = false;
+	document.getElementById('close').disabled = false;
+	document.getElementById('reload').disabled = true;
+});
+socket.addEventListener('close', (event) => {
+	document.getElementById('power').disabled = true;
+	document.getElementById('source').disabled = true;
+	document.getElementById('close').disabled = true;
+	document.getElementById('reload').disabled = false;
+});
+socket.addEventListener('error', (event) => { alert('error'); });
+function buttonClose() { socket.close(1000, "Client closing connection"); }
+function keyDown(c) { socket.send(encode_rc6(4, c)); }
+function keyUp() { socket.send(new ArrayBuffer(0)); document.getElementById("message").innerText = "key up"; }
+function buttonReload() {
+	document.getElementById('reload').disabled = true;
+	let string = window.location.href;
+	const i = string.indexOf('html');
+	string = string.substring(0, i);
+	window.location.href = `${string}html?ip=${ip}`;
+}
+</script>
+</head>
+<body>
+<p style="text-align: center;" ontouchend="keyUp()"><button id="power" class="btn-large" onpointerdown="keyDown(12)" disabled>POWER</button></p>
+<p style="text-align: center;" ontouchend="keyUp()"><button id="source" class="btn-large" onpointerdown="keyDown(63)" disabled>SOURCE</button></p>
+<p style="text-align: center;">
+<button id="close" class="btn-large" onclick="buttonClose()" disabled>Close Connection</button>
+</p>
+<p style="text-align: center;">
+<button id="reload" class="btn-large" onclick="buttonReload()" disabled>Reconnect</button>
+</p>
+</body>
+</html>
