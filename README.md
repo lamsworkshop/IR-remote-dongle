@@ -8,7 +8,7 @@ You must visit [sbprojects](https://www.sbprojects.net/knowledge/ir/index.php) t
 
 ## Sending IR code to dongle in Uint8Array
 
-* The first byte sets the carrier frequency = 3333k / (n - 1)
+* The first byte sets the carrier frequency = 3333 / (n - 1) kHz
 * The second byte sets the bit width. It is the number of carrier cycle in a bit.
 * The rest are the bit stream data.
 * [00] = stop IR stream
@@ -28,10 +28,21 @@ You must visit [sbprojects](https://www.sbprojects.net/knowledge/ir/index.php) t
 * For MARK/SPACE shorter than 128 units takes only one byte with MSB = 0
 * For MARK/SPACE longer than 127 units takes two bytes, first byte MSB = 1, the value is calculated to [byte1] + ([byte2] - 1) * 127
 
+## Text Frame Handling
+
+* Zero length string: initiate IR LEARN MODE
+* String begins with "AT+CWJAP": relayed to ESP01
+* All other strings shall be echoed back to client
+* String length shall be less than 120 because of buffer size limit
+
 ## Buffer size is 120 byte
 
 * The initial design is for ATTINY414 which has only 256 bytes SRAM.
 * ATTINY414 cannot accommodate both remote and learner codes.
+
+## Onboard Button
+
+* click button to issue command `AT+CWJAP="SSID","PASSWORD"` to ESP01
 
 ## ESP01 Setup
 
