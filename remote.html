@@ -12,7 +12,7 @@ body { font-size: 24px; }
 const urlParams = new URLSearchParams(window.location.search);
 var ip = urlParams.get('ip');
 if (ip === null) ip = prompt("Please enter ip: ", "192.168."); 
-const socket = new WebSocket(`wss://${ip}:9001`);
+const socket = new WebSocket(`ws://${ip}:9001`);
 socket.binaryType = "arraybuffer";
 socket.addEventListener('open', (event) => {
 	document.getElementById('power').disabled = false;
@@ -40,7 +40,7 @@ function buttonReload() {
 </script>
 </head>
 <body>
-<p style="text-align: center;" ontouchend="keyUp()"><button id="power" class="btn-large" onpointerdown="keyDown(12)" disabled>P OWER</button></p>
+<p style="text-align: center;" ontouchend="keyUp()"><button id="power" class="btn-large" onpointerdown="keyDown(12)" disabled>POWER</button></p>
 <p style="text-align: center;" ontouchend="keyUp()"><button id="source" class="btn-large" onpointerdown="keyDown(63)" disabled>SOURCE</button></p>
 <p style="text-align: center;">
 <button id="close" class="btn-large" onclick="buttonClose()" disabled>Close Connection</button>
