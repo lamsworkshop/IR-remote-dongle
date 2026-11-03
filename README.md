@@ -26,7 +26,7 @@ You must visit [sbprojects](https://www.sbprojects.net/knowledge/ir/index.php) t
 * Return Uint8Array of MARK/SPACE in unit of 19.2 us
 * The array start with MARK and then SPACE alternatingly
 * For MARK/SPACE shorter than 128 units takes only one byte with MSB = 0
-* For MARK/SPACE longer than 127 units takes two bytes, first byte MSB = 1, the value is calculated to [byte1] + ((byte2] - 1) * 127
+* For MARK/SPACE longer than 127 units takes two bytes, first byte MSB = 1, the value is calculated to [byte1] + ([byte2] - 1) * 127
 
 ## Buffer size is 120 byte
 
