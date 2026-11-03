@@ -31,7 +31,7 @@ You must visit [sbprojects](https://www.sbprojects.net/knowledge/ir/index.php) t
 ## Text Frame Handling
 
 * Zero length string: initiate IR LEARN MODE
-* String begins with "AT+CWJAP": relayed to ESP01
+* String begins with `AT+CWJAP`: pass to ESP01
 * All other strings shall be echoed back to client
 * String length shall be less than 120 because of buffer size limit
 
