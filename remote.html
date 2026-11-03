@@ -12,7 +12,7 @@ body { font-size: 24px; }
 const urlParams = new URLSearchParams(window.location.search);
 var ip = urlParams.get('ip');
 if (ip === null) ip = prompt("Please enter ip: ", "192.168."); 
-const socket = new WebSocket(`ws://${ip}:9001`);
+const socket = new WebSocket(`wss://${ip}:9001`);
 socket.binaryType = "arraybuffer";
 socket.addEventListener('open', (event) => {
 	document.getElementById('power').disabled = false;
