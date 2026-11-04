@@ -1,24 +1,29 @@
 # IR Remote Dongle
 
-The dongle converts Uint8Array to IR flashing and vice versa. It makes use of an ESP01 as a websocket server which serves atmost 4 clients simultaneously.
+The dongle converts Uint8Array to IR flashing and vice versa. It makes use of an ESP01 as a websocket server which serves at most 4 clients simultaneously.
 
 ## IR Remote Control Theory
 
 You must visit [sbprojects](https://www.sbprojects.net/knowledge/ir/index.php) to learn about IR remote.
+
+## Access Dongle from webpages
+
+* [remote.html](https://www.lamsworkshop.infinityfreeapp.com/remote.html)
+* [learn.html](https://www.lamsworkshop.infinityfreeapp.com/learn.html)
 
 ## Sending IR code to dongle in Uint8Array
 
 * The first byte sets the carrier frequency = 3333 / (n - 1) kHz
 * The second byte sets the bit width. It is the number of carrier cycle in a bit.
 * The rest are the bit stream data.
-* [00] = stop IR stream
-* [0x80] = loop back n bytes conditionally. n is stored in the following byte.
+* `00` = stop IR stream
+* `0x80` = loop back n bytes conditionally. n is stored in the following byte.
 * Send an empty Uint8Array to stop looping.
-* [0bxxxxxxx0] = bitmap, MSB out first and always ends in '1'
-* [0bxxx10000] = "xxx1"
-* [0bxnnnnnn1] = 'nnnnnn' numbers of x
-* [0b00001001] = 4 numbers of 0 = "0000"
-* [0b10001101] = 6 numbers of 1 = "111111"
+* `0bxxxxxxx0` = bitmap, MSB out first and always ends in '1'
+* `0bxxx10000` = "xxx1"
+* `0bxnnnnnn1` = 'nnnnnn' numbers of x
+* `0b00001001` = 4 numbers of 0 = "0000"
+* `0b10001101` = 6 numbers of 1 = "111111"
 
 ## Point your remote to the Dongle
 
@@ -26,7 +31,7 @@ You must visit [sbprojects](https://www.sbprojects.net/knowledge/ir/index.php) t
 * Return Uint8Array of MARK/SPACE in unit of 19.2 us
 * The array start with MARK and then SPACE alternatingly
 * For MARK/SPACE shorter than 128 units takes only one byte with MSB = 0
-* For MARK/SPACE longer than 127 units takes two bytes, first byte MSB = 1, the value is calculated to [byte1] + ([byte2] - 1) * 127
+* For MARK/SPACE longer than 127 units takes two bytes, first byte MSB = 1, the value is calculated to `byte1` + (`byte2` - 1) * 127
 
 ## Text Frame Handling
 
@@ -46,10 +51,9 @@ You must visit [sbprojects](https://www.sbprojects.net/knowledge/ir/index.php) t
 
 ## ESP01 Setup
 
-```
-AT+CWMODE=1
-AT+CWJAP="ssid","password"
-```
+* set to work station: `AT+CWMODE=1`
+* join access point: `AT+CWJAP="said","password"`
+* get private IP: `AT+CIFSR`
 
 ## ESP01 FIRMWARE
 
