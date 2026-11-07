@@ -19,8 +19,8 @@ You must visit [sbprojects](https://www.sbprojects.net/knowledge/ir/index.php) t
 * `00` = stop IR stream
 * `0x80` = loop back n bytes conditionally. n is stored in the following byte.
 * Send an empty Uint8Array to stop looping.
-* `0bxxxxxxx0` = bitmap, MSB out first and always ends in '1'
-* `0bxxx10000` = "xxx1"
+* `0bxxxxxxx0` = bitmap, MSB out first and stop BEFORE LAST '1'
+* `0bxxx10000` = "xxx"
 * `0bxnnnnnn1` = 'nnnnnn' numbers of x
 * `0b00001001` = 4 numbers of 0 = "0000"
 * `0b10001101` = 6 numbers of 1 = "111111"
