@@ -53,7 +53,7 @@ You must visit [sbprojects](https://www.sbprojects.net/knowledge/ir/index.php) t
 
 * set to work station: `AT+CWMODE=1`
 * join access point: `AT+CWJAP="ssid","password"`
-* get private IP: `AT+CIFSR`
+* show private IP: `AT+CIFSR`
 
 ## ESP01 FIRMWARE
 
